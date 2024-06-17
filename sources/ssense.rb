@@ -6,12 +6,15 @@ require_relative 'ssense/main'
 client = Sources::Ssense.new
 slack = Utils::Slack.new
 
-urls = ARGF.readlines
+lines = ARGF.readlines
 
-urls.each do |url| # rubocop:disable Metrics/BlockLength
-  puts "READLINE: #{url}"
+lines.each do |line| # rubocop:disable Metrics/BlockLength
+  puts "READLINE: #{line}"
+
+  url = line.strip
+
   # if a row is commented out with a `#`, then skip it
-  next if url.strip.start_with?('#')
+  next if url.start_with?('#')
 
   web_page = client.fetch_page(url)
 
@@ -26,7 +29,7 @@ urls.each do |url| # rubocop:disable Metrics/BlockLength
         type: :header,
         text: {
           type: :plain_text,
-          text: url.strip.split('/').last
+          text: url.split('/').last
         }
       },
       # row 2
@@ -35,7 +38,7 @@ urls.each do |url| # rubocop:disable Metrics/BlockLength
         elements: [
           {
             type: :mrkdwn,
-            text: url.strip
+            text: url
           }
         ]
       }
@@ -43,8 +46,8 @@ urls.each do |url| # rubocop:disable Metrics/BlockLength
   }
 
   # create a section (row) for each item
-  items.map! do |item|
-    {
+  items.each do |item|
+    data[:blocks] << {
       type: :section,
       text: {
         type: :mrkdwn,
@@ -52,9 +55,6 @@ urls.each do |url| # rubocop:disable Metrics/BlockLength
       }
     }
   end
-
-  # append them to the blocks[]
-  items.each { |item| data[:blocks] << item }
 
   response = slack.send(data)
 
