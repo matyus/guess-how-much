@@ -7,4 +7,5 @@ I love to brag about how little I spent.
 - Ruby/Bundler
 - Environment variables, watch out
 - Slack Webhook endpoint
+- Look at the GitHub Actions for usage
 
