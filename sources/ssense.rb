@@ -9,6 +9,7 @@ slack = Utils::Slack.new
 urls = ARGF.readlines
 
 urls.each do |url| # rubocop:disable Metrics/BlockLength
+  puts "READLINE: #{url}"
   # if a row is commented out with a `#`, then skip it
   next if url.strip.start_with?('#')
 

@@ -5,8 +5,8 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 
-# Handling for ssense.com
 module Sources
+  # Handling for ssense.com
   class Ssense
     def fetch_page(url)
       ssense_uri = URI(url.strip)
@@ -25,9 +25,7 @@ module Sources
 
       parsed_items = items.map { |item| parse_item(item) }
 
-      parsed_items.sort do |a, b|
-        a['name'] <=> b['name']
-      end
+      parsed_items.sort { |a, b| a['name'] <=> b['name'] }
     end
 
     def parse_page(response)
