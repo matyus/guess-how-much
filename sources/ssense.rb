@@ -51,7 +51,7 @@ lines.each do |line| # rubocop:disable Metrics/BlockLength
       type: :section,
       text: {
         type: :mrkdwn,
-        text: "<https://ssense.com/en-us#{item['url']}|#{item['name']}> $#{item['offers']['price']}"
+        text: "<https://ssense.com/en-us#{item[:url]}|#{item[:product_name]}> #{item[:pricing]}"
       }
     }
   end
