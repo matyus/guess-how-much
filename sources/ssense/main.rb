@@ -15,7 +15,7 @@ module Sources
         'User-Agent' => ENV.fetch('USER_AGENT_STRING')
       }
 
-      puts "USER AGENT: #{headers['User-Agent'][0,8]}"
+      puts "USER AGENT: #{headers['User-Agent'][0, 8]}"
 
       Net::HTTP.get(ssense_uri, headers)
     end
