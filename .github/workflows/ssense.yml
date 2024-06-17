@@ -20,6 +20,6 @@ jobs:
 
       - name: Setup environment & Run script
         env:
-          USER_AGENT_STRING: ${{ env.USER_AGENT_STRING }}
+          USER_AGENT_STRING: ${{ vars.USER_AGENT_STRING }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: ruby sources/ssense.rb sources/ssense/urls.txt
