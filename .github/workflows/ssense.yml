@@ -7,14 +7,21 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.2.2"
 
-      - name: Setup environment & Run script
-        env:
-          USER_AGENT_STRING: ${{ env.USER_AGENT_STRING }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          ruby sources/ssense.rb sources/ssense/urls.txt
+      - name: Install libs
+        run: bundle install
+
+      - name: List stuff
+        run: ls .
+      # - name: Setup environment & Run script
+      #   env:
+      #     USER_AGENT_STRING: ${{ env.USER_AGENT_STRING }}
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #   run: ruby sources/ssense.rb sources/ssense/urls.txt
