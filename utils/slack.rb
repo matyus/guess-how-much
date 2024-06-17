@@ -18,9 +18,16 @@ module Utils
     def send(data = { text: 'Default' })
       body = JSON.dump(data)
 
-      response = Net::HTTP.post(@slack_uri, body, HEADERS)
+      puts "PORT: #{@slack_uri.port}"
+      puts "BODY: #{body}"
 
-      response.body
+      # response = Net::HTTP.post(@slack_uri, body, HEADERS)
+      # response = Net::HTTP.start(@slack_uri, use_ssl: true) do |request|
+      #   request.body = body
+      #   reuqest.headers = HEADERS
+      # end
+
+      # response.body
     end
   end
 end
