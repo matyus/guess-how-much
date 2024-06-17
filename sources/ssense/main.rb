@@ -23,7 +23,7 @@ module Sources
     def filter_page(response)
       page = parse_page(response)
 
-      items = page.css('.plp-products__product-tile script[type="application/ld+json"]')
+      items = page.css(ENV.fetch('SSENSE_CSS_PATH'))
 
       parsed_items = items.map { |item| parse_item(item) }
 
