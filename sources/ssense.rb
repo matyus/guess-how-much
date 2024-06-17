@@ -58,6 +58,7 @@ urls.each do |url| # rubocop:disable Metrics/BlockLength
   response = slack.send(data)
 
   puts "URL:      #{url}"
+  puts "DATA:     #{data}"
   puts "RESPONSE: #{response}"
   puts ' '
 end

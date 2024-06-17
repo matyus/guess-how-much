@@ -22,7 +22,4 @@ jobs:
         env:
           USER_AGENT_STRING: ${{ env.USER_AGENT_STRING }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          echo ${USER_AGENT_STRING:0:8}
-          echo ${SLACK_WEBHOOK_URL:0:8}
-          ruby sources/ssense.rb sources/ssense/urls.txt
+        run: ruby sources/ssense.rb sources/ssense/urls.txt

@@ -21,13 +21,9 @@ module Utils
       puts "PORT: #{@slack_uri.port}"
       puts "BODY: #{body}"
 
-      # response = Net::HTTP.post(@slack_uri, body, HEADERS)
-      # response = Net::HTTP.start(@slack_uri, use_ssl: true) do |request|
-      #   request.body = body
-      #   reuqest.headers = HEADERS
-      # end
+      response = Net::HTTP.post(@slack_uri, body, HEADERS)
 
-      # response.body
+      response.body
     end
   end
 end
