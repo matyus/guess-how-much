@@ -1,0 +1,22 @@
+name: Ssense
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2.2"
+
+      - name: Setup environment
+        env:
+          USER_AGENT_STRING: {{ env.USER_AGENT_STRING }}
+          SLACK_WEBHOOK_URL: {{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Run script
+        run: |
+          ruby sources/ssense.rb sources/ssense/urls.txt
