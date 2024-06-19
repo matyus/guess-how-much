@@ -7,6 +7,12 @@ require 'json'
 module Utils
   # Send Slack messages to the given webhook
   class Slack
+    # BlockKit formatting must conform:
+    # https://app.slack.com/block-kit-builder/
+    BLOCKS_DEFAULT = {
+      blocks: []
+    }.freeze
+
     HEADERS = {
       'Content-Type' => 'application/json'
     }.freeze
@@ -15,13 +21,13 @@ module Utils
       @slack_uri = URI(url)
     end
 
-    def send(data = { text: 'Default' })
+    def send(data = { text: 'Default' }, headers = {})
       body = JSON.dump(data)
 
       puts "PORT: #{@slack_uri.port}"
       puts "BODY: #{body}"
 
-      response = Net::HTTP.post(@slack_uri, body, HEADERS)
+      response = Net::HTTP.post(@slack_uri, body, HEADERS.merge(headers))
 
       response.body
     end
