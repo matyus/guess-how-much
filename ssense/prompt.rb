@@ -20,7 +20,7 @@ class Prompt
     item_path = @prompt.select('Product', items, filter: true)
 
     begin
-      sizes = Ssense.sizes(item_path)
+      sizes = Ssense.sizes(item_path).map { |element| element.content.delete("\n") }
 
       puts sizes
     ensure

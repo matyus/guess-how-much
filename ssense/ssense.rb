@@ -51,7 +51,7 @@ class Ssense
 
       raise NoSizesFoundError if options.empty?
 
-      options.map { |option| option.content.delete("\n") }
+      options
     end
 
     private
