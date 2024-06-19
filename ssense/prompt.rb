@@ -8,12 +8,14 @@ require_relative 'ssense'
 class Prompt
   def initialize
     @prompt = TTY::Prompt.new
+
+    run
   end
 
   def run # rubocop:disable Metric/MethodLength
     product_path = @prompt.select('Designer', Ssense.designers, filter: true)
 
-    items = Ssense.products(product_path)
+    items = Ssense.products(product_path).map { |item| format_choice(item) }
 
     item_path = @prompt.select('Product', items, filter: true)
 
@@ -24,10 +26,21 @@ class Prompt
     ensure
       open = @prompt.yes? 'Open URL?'
 
-      `open https://www.ssense.com#{item_path}` if open
+      `open #{Ssense::BASE_URL}#{item_path}` if open
 
       run
     end
+  end
+
+  private
+
+  # https://github.com/piotrmurach/tty-prompt?tab=readme-ov-file#261-choices
+  # define an array of choices where each choice is a hash value with :name & :value keys
+  def format_choice(element)
+    {
+      value: element.attributes['href'].value,
+      name: element.text.delete("\n").strip
+    }
   end
 end
 

@@ -36,7 +36,7 @@ class Ssense
 
       raise ProductPageEmptyError if items.empty?
 
-      items.map { |item| parse_item(item) }
+      items
     end
 
     def sizes(path)
@@ -56,7 +56,7 @@ class Ssense
 
     private
 
-    def get(url) # rubocop:disable Metric/MethodLength
+    def get(url)
       uri = URI("#{BASE_URL}#{url.strip}")
 
       headers = {
@@ -68,25 +68,10 @@ class Ssense
       if response.is_a? Net::HTTPRedirection
         redirect_uri = URI(response.header['location'])
 
-        redirect = Net::HTTP.get_response(redirect_uri, headers)
-
-        return parse_page(redirect.body)
+        response = Net::HTTP.get_response(redirect_uri, headers)
       end
 
-      parse_page(response.body)
-    end
-
-    # create a DOM
-    def parse_page(response)
-      Nokogiri::HTML.parse(response)
-    end
-
-    # parse the node
-    def parse_item(item)
-      {
-        value: item.attributes['href'].value,
-        name: item.text.delete("\n").strip
-      }
+      Nokogiri::HTML.parse(response.body)
     end
   end
 end
