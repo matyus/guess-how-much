@@ -18,15 +18,7 @@ class Ssense
     def designers
       document = get('/en-us/men/sale')
 
-      links = document.css('#designer-list a')
-
-      map = {}
-
-      links.each do |link|
-        map[link.text.strip] = link.attributes['href'].value
-      end
-
-      map
+      document.css('#designer-list a')
     end
 
     def products(path)

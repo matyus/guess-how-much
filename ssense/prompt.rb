@@ -12,15 +12,17 @@ class Prompt
     run
   end
 
-  def run # rubocop:disable Metric/MethodLength
-    product_path = @prompt.select('Designer', Ssense.designers, filter: true)
+  def run # rubocop:disable Metric/MethodLength, Metrics/AbcSize
+    designers = Ssense.designers.map { |designer| format_selection(designer) }
 
-    items = Ssense.products(product_path).map { |item| format_choice(item) }
+    product_path = @prompt.select('Designer', designers, filter: true)
+
+    items = Ssense.products(product_path).map { |item| format_selection(item) }
 
     item_path = @prompt.select('Product', items, filter: true)
 
     begin
-      sizes = Ssense.sizes(item_path).map { |element| element.content.delete("\n") }
+      sizes = Ssense.sizes(item_path).map { |size| size.content.delete("\n") }
 
       puts sizes
     ensure
@@ -36,7 +38,7 @@ class Prompt
 
   # https://github.com/piotrmurach/tty-prompt?tab=readme-ov-file#261-choices
   # define an array of choices where each choice is a hash value with :name & :value keys
-  def format_choice(element)
+  def format_selection(element)
     {
       value: element.attributes['href'].value,
       name: element.text.delete("\n").strip
