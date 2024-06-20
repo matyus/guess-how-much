@@ -6,21 +6,23 @@ require_relative 'ssense'
 
 # CLI 4 lyfe
 class Prompt
+  attr_reader :designers, :products
+
   def initialize
     @prompt = TTY::Prompt.new
+    @designers = Ssense.designers.map { |designer| format_selection(designer) }
 
     run
   end
 
-  def run # rubocop:disable Metric/MethodLength, Metrics/AbcSize
-    designers = Ssense.designers.map { |designer| format_selection(designer) }
-
-    product_path = @prompt.select('Designer', designers, filter: true)
+  def run # rubocop:disable Metrics/MethodLength
+    product_path = @prompt.select('Designer', @designers, filter: true)
 
     items = Ssense.products(product_path).map { |item| format_selection(item) }
 
     item_path = @prompt.select('Product', items, filter: true)
 
+    # not all things have "sizes"
     begin
       sizes = Ssense.sizes(item_path).map { |size| size.content.delete("\n") }
 
@@ -30,7 +32,7 @@ class Prompt
 
       `open #{Ssense::BASE_URL}#{item_path}` if open
 
-      run
+      run if ENV.fetch('AUTOLOAD', 'true') == 'true'
     end
   end
 
@@ -46,4 +48,4 @@ class Prompt
   end
 end
 
-Prompt.new
+Prompt.new if ENV.fetch('AUTOLOAD', 'true') == 'true'
