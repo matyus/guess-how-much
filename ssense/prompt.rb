@@ -9,8 +9,8 @@ require_relative 'ssense'
 class Prompt
   attr_reader :designers, :products
 
-  def initialize(run)
-    @run = run == 'true'
+  def initialize(run:)
+    @run = run
     @prompt = TTY::Prompt.new
     @logger = TTY::Logger.new
     @designers = Ssense.designers.map { |designer| format_selection(designer) }
@@ -28,6 +28,7 @@ class Prompt
     # not all things have "sizes"
     begin
       Ssense.sizes(item_path).each do |size|
+        # skip
         next if size.text =~ /SELECT A SIZE/
 
         @logger.info(size.text.strip)
@@ -55,6 +56,6 @@ class Prompt
 end
 
 # if you don't want to auto-run the prompt, set RUN=false
-run = ENV.fetch('RUN', 'true')
+run = ENV.fetch('RUN', 'true') == 'true'
 
-Prompt.new(run)
+Prompt.new(run:)
