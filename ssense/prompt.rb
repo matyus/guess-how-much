@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'tty-prompt'
+require 'tty-logger'
 
 require_relative 'ssense'
 
@@ -8,14 +9,16 @@ require_relative 'ssense'
 class Prompt
   attr_reader :designers, :products
 
-  def initialize
+  def initialize(run)
+    @run = run == 'true'
     @prompt = TTY::Prompt.new
+    @logger = TTY::Logger.new
     @designers = Ssense.designers.map { |designer| format_selection(designer) }
 
-    run
+    main if @run
   end
 
-  def run # rubocop:disable Metrics/MethodLength
+  def main # rubocop:disable Metrics/MethodLength
     product_path = @prompt.select('Designer', @designers, filter: true)
 
     items = Ssense.products(product_path).map { |item| format_selection(item) }
@@ -24,15 +27,17 @@ class Prompt
 
     # not all things have "sizes"
     begin
-      sizes = Ssense.sizes(item_path).map { |size| size.content.delete("\n") }
+      Ssense.sizes(item_path).each do |size|
+        next if size.text =~ /SELECT A SIZE/
 
-      puts sizes
+        @logger.info(size.text.strip)
+      end
     ensure
       open = @prompt.yes? 'Open URL?'
 
       `open #{Ssense::BASE_URL}#{item_path}` if open
 
-      run if ENV.fetch('AUTOLOAD', 'true') == 'true'
+      main if @run
     end
   end
 
@@ -40,6 +45,7 @@ class Prompt
 
   # https://github.com/piotrmurach/tty-prompt?tab=readme-ov-file#261-choices
   # define an array of choices where each choice is a hash value with :name & :value keys
+  # note: selections navigate, so they are always <a> elements (see: ssense.rb)
   def format_selection(element)
     {
       value: element.attributes['href'].value,
@@ -48,4 +54,7 @@ class Prompt
   end
 end
 
-Prompt.new if ENV.fetch('AUTOLOAD', 'true') == 'true'
+# if you don't want to auto-run the prompt, set RUN=false
+run = ENV.fetch('RUN', 'true')
+
+Prompt.new(run)
