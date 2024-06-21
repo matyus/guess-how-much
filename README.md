@@ -22,6 +22,11 @@ If you want to debug, you can prevent it from auto-running:
 
 ```
 RUN=false irb
+```
+
+You can then interact with the prompt directly:
+
+```
 3.2.2 :001 > require_relative 'ssense/prompt'
  => true
 3.2.2 :002 > prompt = Prompt.new(run: false)
